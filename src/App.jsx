@@ -7,7 +7,7 @@ export default function EmailBuilder() {
   const [greeting, setGreeting] = useState('Dear Customer,');
   const [contentBlocks, setContentBlocks] = useState([]);
   const [closingMessage, setClosingMessage] = useState('');
-  const [signatureName, setSignatureName] = useState('Zoe Blak');
+  const [signatureName, setSignatureName] = useState('Zoe Blake');
   const [psMessage, setPsMessage] = useState('');
   const [view, setView] = useState('builder');
   const [copied, setCopied] = useState(false);
@@ -45,20 +45,120 @@ export default function EmailBuilder() {
         throw new Error('Gemini API key not configured. Please add VITE_GEMINI_API_KEY to your environment variables.');
       }
 
-      const prompt = `You are an expert email copywriter for Pocket Hearing, a leading hearing care provider specializing in affordable hearing aids and professional audiology services.
+      const prompt = `You are an expert email copywriter for Pocket Hearing, the UK's leading online retailer specializing exclusively in Signia hearing aids.
 
 User Request: ${aiPrompt}
 
 Generate a professional email following these exact specifications:
 
 BRAND CONTEXT:
-- Pocket Hearing provides affordable hearing aids and professional hearing care services
-- We offer comprehensive hearing assessments and personalized solutions
-- We have a range of hearing aid products to suit different needs and budgets
-- Contact: contact@pockethearing.com
-- Website: https://www.pockethearing.com
 
-TONE: Professional, friendly, caring. UK English spelling. Focus on helping people hear better.
+COMPANY OVERVIEW:
+- Specialty: Online retailer of Signia hearing aids exclusively
+- Founded: 2020 by Iram Darr (Managing Director)
+- Location: The Old Gun Factory, 20 Watkinson Street, Liverpool L1 0BE
+- Key Audiologist: Zoe Blake (Manager, based in Italy, handles all patient consultations globally)
+
+CORE VALUE PROPOSITIONS:
+
+1. Affordability & Value
+   - "Where quality meets affordability"
+   - Prices slashed by more than half (50%+) compared to high street retailers (Boots, Specsavers, Amplifon)
+   - Premium hearing aids at "pocket-friendly prices"
+   - Hearing aids cost hundreds, not thousands
+
+2. Virtual Hearing Care Innovation
+   - "The Hearing Centre in Your Pocket"
+   - "Hear The Future" - pioneering online hearing care
+   - World's first comprehensive "no-touch" hearing care solution
+   - Remote programming and fine-tuning via Signia App
+   - Free online hearing test using award-winning Ctone audiometry
+
+3. Professional Expertise
+   - Real audiologist support (Zoe Blake) via telecare appointments
+   - Founded and operated by qualified audiologists
+   - Professional programming before dispatch
+   - Comprehensive aftercare and follow-up consultations
+
+4. Convenience & Control
+   - Complete process from home comfort
+   - No shop front visits required
+   - Control hearing aids via smartphone app (iOS/Android)
+   - Fast delivery (typically 2 days)
+   - Appointments scheduled at customer's convenience
+
+5. Quality Without Compromise
+   - Exclusive Signia hearing aids (all models from Silk to Styletto)
+   - 2-year warranty on all devices
+   - Free returns, no questions asked
+   - Professional service without budget compromise
+
+PRODUCT RANGE (Signia Only):
+
+Current Generation (IX Platform):
+- Signia Silk Charge&Go IX (invisible, rechargeable, CIC)
+- Signia Pure Charge&Go IX (RealTime Conversation Enhancement, RITE)
+- Signia Active Pro IX
+
+Previous Generation (AX Platform):
+- Signia Pure Charge&Go AX (Augmented Xperience)
+- Signia Styletto AX (fashion-forward, slim design)
+
+X Platform:
+- Signia Silk X (completely-in-canal, invisible)
+- Signia Active X (lifestyle-focused)
+- Signia Pure X
+- Signia Styletto X
+
+Specialized Solutions:
+- CROS & BiCROS systems for single-sided deafness
+- Silk CROS X and Silk CROS IX (invisible CROS)
+- Pure Charge&Go CROS AX
+- Styletto CROS AX
+
+SERVICE OFFERINGS:
+Included with Purchase:
+- Free online hearing test
+- Professional programming before dispatch
+- Free medical and lifestyle welcome telecare consultation
+- Signia App connection and training
+- Follow-up fine-tuning telecare appointment
+- Ongoing care on pay-as-you-go basis
+
+Additional Services:
+- Reprogramming services
+- Professional cleaning and servicing
+- Repairs (£295 per device, 4-year coverage)
+- Extraction cord replacement
+- Support for former Hearing Direct customers
+
+MISSION DEEP POCKET (Social Impact):
+- 30% of company profits donated to provide hearing aids to those in need globally
+- Partnership with Donación Salud Auditiva (Elena Pina Mendez)
+- Donated £10,000 in power hearing aids for terminally ill children in Mexico
+- Manufacturer supplies donated aids at cost price
+- Focus on areas without access to hearing care
+
+KEY DIFFERENTIATORS:
+- Single-brand specialization (perfect technology knowledge)
+- True audiologist support (not just sales staff)
+- Virtual care delivery worldwide
+- No waiting times (vs 18-month NHS waits)
+- Transparent pricing, significant savings
+- Founded by practicing audiologists who understand patient needs
+
+CONTACT INFORMATION:
+- Phone: 0800 331 7006
+- Email: contact@pockethearing.com (1 business day response)
+- Hours: 9 AM onwards
+- Website: https://www.pockethearing.com
+- Book Consultation: https://app.squarespacescheduling.com/schedule/a923d61b/appointment/20545940/calendar/3969702?appointmentTypeIds[]=20545940
+
+SOCIAL MEDIA:
+- Facebook: https://www.facebook.com/pockethearing
+- YouTube: https://www.youtube.com/@pockethearing
+
+TONE: Professional, friendly, caring, accessible. UK English spelling. Focus on affordability (50%+ savings), convenience of virtual care, Signia product quality, and Zoe Blake's professional support.
 
 Return ONLY valid JSON in this exact structure (no markdown, no code blocks, just raw JSON):
 
@@ -81,7 +181,7 @@ Return ONLY valid JSON in this exact structure (no markdown, no code blocks, jus
     }
   ],
   "closingMessage": "Closing paragraph before signature",
-  "signatureName": "Zoe Blak",
+  "signatureName": "Zoe Blake",
   "psMessage": "Optional P.S. message or empty string"
 }
 
@@ -134,7 +234,7 @@ IMPORTANT:
       setHeaderTitle(emailData.headerTitle || '');
       setGreeting(emailData.greeting || 'Dear Customer,');
       setClosingMessage(emailData.closingMessage || '');
-      setSignatureName(emailData.signatureName || 'Zoe Blak');
+      setSignatureName(emailData.signatureName || 'Zoe Blake');
       setPsMessage(emailData.psMessage || '');
 
       // Create content blocks with unique IDs
@@ -366,6 +466,7 @@ IMPORTANT:
                     <!-- Header -->
                     <tr>
                         <td style="background-color: #253551; padding: 30px 20px; text-align: center;">
+                            <img src="https://www.pockethearing.com/logo_pocket.png" alt="Pocket Hearing" style="max-width: 200px; height: auto; margin: 0 0 20px 0; display: block; margin-left: auto; margin-right: auto;" />
                             <h1 style="color: #FFFFFF; margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 24px; font-weight: bold; line-height: 1.3;">
                                 ${headerTitle}
                             </h1>
@@ -421,8 +522,10 @@ IMPORTANT:
                             </p>
                             
                             <p style="margin: 15px 0 0 0; font-size: 14px;">
+                                <strong>Phone:</strong> 0800 331 7006<br/>
                                 <strong>Email:</strong> <a href="mailto:contact@pockethearing.com" style="color: #253551; text-decoration: none;">contact@pockethearing.com</a><br/>
-                                <strong>Website:</strong> <a href="https://www.pockethearing.com" style="color: #253551; text-decoration: none;">https://www.pockethearing.com</a>
+                                <strong>Website:</strong> <a href="https://www.pockethearing.com" style="color: #253551; text-decoration: none;">https://www.pockethearing.com</a><br/>
+                                <strong>Book a Consultation:</strong> <a href="https://app.squarespacescheduling.com/schedule/a923d61b/appointment/20545940/calendar/3969702?appointmentTypeIds[]=20545940" style="color: #253551; text-decoration: none;">Schedule with Zoe</a>
                             </p>
                             
                         </td>
@@ -446,7 +549,7 @@ IMPORTANT:
                     <tr>
                         <td style="background-color: #253551; color: #FFFFFF; padding: 20px; text-align: center; font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
                             <p style="margin: 0 0 10px 0;">© 2025 Pocket Hearing. All rights reserved.</p>
-                            <p style="margin: 0;">You're receiving this email because you're a valued member of the Pocket Hearing professional network.</p>
+                            <p style="margin: 0;">You're receiving this email because you're a valued customer of Pocket Hearing.</p>
                         </td>
                     </tr>
                     
@@ -1177,7 +1280,7 @@ IMPORTANT:
                     fontSize: '14px'
                   }}
                 >
-                  <option value="Zoe Blak">Zoe Blak</option>
+                  <option value="Zoe Blake">Zoe Blake</option>
                 </select>
               </div>
 
