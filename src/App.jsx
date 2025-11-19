@@ -466,7 +466,7 @@ IMPORTANT:
                     <!-- Header -->
                     <tr>
                         <td style="background-color: #253551; padding: 30px 20px; text-align: center;">
-                            <img src="https://www.pockethearing.com/logo_pocket.png" alt="Pocket Hearing" style="max-width: 200px; height: auto; margin: 0 0 20px 0; display: block; margin-left: auto; margin-right: auto;" />
+                            <img src="https://images.squarespace-cdn.com/content/v1/5ea0274b6f26ff780c56bac1/1590580355971-SZIOHLI6EERJH234U7LS/logo_pocket.png?format=1500w" alt="Pocket Hearing" style="max-width: 200px; height: auto; margin: 0 0 20px 0; display: block; margin-left: auto; margin-right: auto;" />
                             <h1 style="color: #FFFFFF; margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 24px; font-weight: bold; line-height: 1.3;">
                                 ${headerTitle}
                             </h1>
