@@ -27,6 +27,7 @@ export default function EmailBuilder() {
     { value: 'button', label: 'Single Button' },
     { value: 'dualButton', label: 'Dual Buttons' },
     { value: 'bulletList', label: 'Bullet List' },
+    { value: 'image', label: 'Image' },
   ];
 
   const generateWithAI = async () => {
@@ -290,6 +291,17 @@ IMPORTANT:
       case 'bulletList':
         newBlock.content = { items: [''] };
         break;
+      case 'image':
+        newBlock.content = {
+          url: '',
+          alt: '',
+          width: 600,
+          align: 'center',
+          isLoading: false,
+          isLoaded: false,
+          error: ''
+        };
+        break;
     }
 
     setContentBlocks([...contentBlocks, newBlock]);
@@ -309,7 +321,7 @@ IMPORTANT:
   const moveBlock = (id, direction) => {
     const index = contentBlocks.findIndex(block => block.id === id);
     if (
-      (direction === 'up' && index === 0) || 
+      (direction === 'up' && index === 0) ||
       (direction === 'down' && index === contentBlocks.length - 1)
     ) return;
 
@@ -317,6 +329,58 @@ IMPORTANT:
     const newIndex = direction === 'up' ? index - 1 : index + 1;
     [newBlocks[index], newBlocks[newIndex]] = [newBlocks[newIndex], newBlocks[index]];
     setContentBlocks(newBlocks);
+  };
+
+  const loadImagePreview = (blockId, url) => {
+    // Validate URL format
+    if (!url || !url.trim()) {
+      updateBlock(blockId, {
+        ...contentBlocks.find(b => b.id === blockId).content,
+        error: 'Please enter a valid image URL',
+        isLoading: false,
+        isLoaded: false
+      });
+      return;
+    }
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      updateBlock(blockId, {
+        ...contentBlocks.find(b => b.id === blockId).content,
+        error: 'URL must start with http:// or https://',
+        isLoading: false,
+        isLoaded: false
+      });
+      return;
+    }
+
+    // Set loading state
+    updateBlock(blockId, {
+      ...contentBlocks.find(b => b.id === blockId).content,
+      isLoading: true,
+      error: '',
+      isLoaded: false
+    });
+
+    // Try to load the image
+    const img = new Image();
+    img.onload = () => {
+      updateBlock(blockId, {
+        ...contentBlocks.find(b => b.id === blockId).content,
+        isLoading: false,
+        isLoaded: true,
+        error: '',
+        imageDimensions: { width: img.width, height: img.height }
+      });
+    };
+    img.onerror = () => {
+      updateBlock(blockId, {
+        ...contentBlocks.find(b => b.id === blockId).content,
+        isLoading: false,
+        isLoaded: false,
+        error: 'Failed to load image. Please check the URL and try again.'
+      });
+    };
+    img.src = url;
   };
 
   const generateHTML = () => {
@@ -446,6 +510,22 @@ IMPORTANT:
           contentHTML += `
             </table>
           `;
+          break;
+
+        case 'image':
+          if (block.content.url && block.content.isLoaded) {
+            const alignStyle = block.content.align === 'left' ? 'left' :
+                             block.content.align === 'right' ? 'right' : 'center';
+            contentHTML += `
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 20px 0;">
+                <tr>
+                  <td style="text-align: ${alignStyle};">
+                    <img src="${block.content.url}" alt="${block.content.alt || 'Image'}" style="max-width: ${block.content.width || 600}px; width: 100%; height: auto; display: block; ${alignStyle === 'center' ? 'margin: 0 auto;' : ''}" />
+                  </td>
+                </tr>
+              </table>
+            `;
+          }
           break;
       }
     });
@@ -932,6 +1012,148 @@ IMPORTANT:
                 >
                   <Plus size={16} /> Add Item
                 </button>
+              </div>
+            )}
+
+            {block.type === 'image' && (
+              <div>
+                <div style={{ marginBottom: '15px' }}>
+                  <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Image URL</label>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <input
+                      type="url"
+                      value={block.content.url}
+                      onChange={(e) => updateBlock(block.id, { ...block.content, url: e.target.value, isLoaded: false, error: '' })}
+                      placeholder="Enter image URL (https://...)"
+                      style={{
+                        flex: 1,
+                        padding: '10px',
+                        border: '1px solid #ced6e5',
+                        borderRadius: '4px',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <button
+                      onClick={() => loadImagePreview(block.id, block.content.url)}
+                      disabled={block.content.isLoading}
+                      style={{
+                        background: block.content.isLoading ? '#999' : '#FF9100',
+                        color: 'white',
+                        border: 'none',
+                        padding: '10px 20px',
+                        borderRadius: '4px',
+                        cursor: block.content.isLoading ? 'not-allowed' : 'pointer',
+                        fontWeight: 'bold',
+                        minWidth: '100px'
+                      }}
+                    >
+                      {block.content.isLoading ? 'Loading...' : 'Preview'}
+                    </button>
+                  </div>
+                  {block.content.error && (
+                    <p style={{ margin: '5px 0 0 0', color: '#ff4444', fontSize: '13px' }}>
+                      ⚠️ {block.content.error}
+                    </p>
+                  )}
+                </div>
+
+                {block.content.isLoaded && block.content.url && (
+                  <>
+                    <div style={{
+                      marginBottom: '15px',
+                      padding: '15px',
+                      background: '#f5f5f5',
+                      borderRadius: '8px',
+                      border: '2px solid #ced6e5'
+                    }}>
+                      <img
+                        src={block.content.url}
+                        alt={block.content.alt || 'Preview'}
+                        style={{
+                          maxWidth: '100%',
+                          height: 'auto',
+                          display: 'block',
+                          margin: '0 auto',
+                          borderRadius: '4px'
+                        }}
+                      />
+                      {block.content.imageDimensions && (
+                        <p style={{ margin: '10px 0 0 0', fontSize: '12px', color: '#666', textAlign: 'center' }}>
+                          Original: {block.content.imageDimensions.width} × {block.content.imageDimensions.height}px
+                        </p>
+                      )}
+                    </div>
+
+                    <div style={{ marginBottom: '15px' }}>
+                      <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Alt Text (for accessibility)</label>
+                      <input
+                        type="text"
+                        value={block.content.alt}
+                        onChange={(e) => updateBlock(block.id, { ...block.content, alt: e.target.value })}
+                        placeholder="Describe the image..."
+                        style={{
+                          width: '100%',
+                          padding: '10px',
+                          border: '1px solid #ced6e5',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Width (px)</label>
+                        <input
+                          type="number"
+                          value={block.content.width}
+                          onChange={(e) => updateBlock(block.id, { ...block.content, width: parseInt(e.target.value) || 600 })}
+                          min="100"
+                          max="600"
+                          style={{
+                            width: '100%',
+                            padding: '10px',
+                            border: '1px solid #ced6e5',
+                            borderRadius: '4px',
+                            fontSize: '14px'
+                          }}
+                        />
+                      </div>
+
+                      <div style={{ flex: 1 }}>
+                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Alignment</label>
+                        <select
+                          value={block.content.align}
+                          onChange={(e) => updateBlock(block.id, { ...block.content, align: e.target.value })}
+                          style={{
+                            width: '100%',
+                            padding: '10px',
+                            border: '1px solid #ced6e5',
+                            borderRadius: '4px',
+                            fontSize: '14px'
+                          }}
+                        >
+                          <option value="left">Left</option>
+                          <option value="center">Center</option>
+                          <option value="right">Right</option>
+                        </select>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {!block.content.isLoaded && !block.content.error && !block.content.isLoading && (
+                  <div style={{
+                    padding: '40px',
+                    textAlign: 'center',
+                    background: '#f5f5f5',
+                    borderRadius: '8px',
+                    border: '2px dashed #ced6e5',
+                    color: '#666'
+                  }}>
+                    <p style={{ margin: 0 }}>Enter an image URL above and click "Preview" to load the image</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
